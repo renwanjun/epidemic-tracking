@@ -1,24 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.less";
+import {
+  renderRoutes,
+  RouteConfig,
+  RouteConfigComponentProps,
+} from "react-router-config";
+import AdminLayout from "./components/layout";
+import { Route, Switch, Redirect } from "react-router-dom";
 
-function App() {
+import { TestContext } from "./contexts";
+function App(props: RouteConfigComponentProps) {
+  let { route } = props;
+  let path = route?.path;
+  let routes = route?.routes;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TestContext.Provider value={props}>
+        <AdminLayout>
+          <Switch>
+            {routes?.map((route: RouteConfig, index) => (
+              <Route
+                key={route.path?.toString()}
+                path={`${path}${route.path}`}
+                exact={route.exact}
+                component={route.component}
+              />
+              // <Route
+              //   key={route.path?.toString()}
+              //   path={`${route.path}`}
+              //   exact={route.exact}
+              //   component={route.component}
+              // />
+            ))}
+          </Switch>
+        </AdminLayout>
+      </TestContext.Provider>
     </div>
   );
 }
