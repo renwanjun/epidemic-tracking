@@ -1,43 +1,30 @@
-import React from "react";
+import React, { memo } from "react";
 import "./App.less";
-import {
-  renderRoutes,
-  RouteConfig,
-  RouteConfigComponentProps,
-} from "react-router-config";
-import AdminLayout from "./components/layout";
-import { Route, Switch, Redirect } from "react-router-dom";
-
-import { TestContext } from "./contexts";
-function App(props: RouteConfigComponentProps) {
+// import { RouteConfig, RouteConfigComponentProps } from "react-router-config";
+import AdminLayout from "components/layout";
+// import { Route, Switch, Redirect } from "react-router-dom";
+import RenderRoutes from "@/utils/render-routes";
+function App(props: any) {
   let { route } = props;
-  let path = route?.path;
+  // console.log(route);
   let routes = route?.routes;
-
   return (
-    <div className="App">
-      <TestContext.Provider value={props}>
-        <AdminLayout>
-          <Switch>
-            {routes?.map((route: RouteConfig, index) => (
-              <Route
-                key={route.path?.toString()}
-                path={`${path}${route.path}`}
-                exact={route.exact}
-                component={route.component}
-              />
-              // <Route
-              //   key={route.path?.toString()}
-              //   path={`${route.path}`}
-              //   exact={route.exact}
-              //   component={route.component}
-              // />
-            ))}
-          </Switch>
-        </AdminLayout>
-      </TestContext.Provider>
-    </div>
+    <AdminLayout {...props}>
+      <RenderRoutes routes={routes} {...props} />
+      {/* {RenderRoutes(routes)} */}
+      {/* <Switch>
+        {routes?.map((route: RouteConfig) => (
+          <Route
+            key={route.path?.toString()}
+            path={`${route.path}`}
+            exact={route.exact}
+            component={route.component}
+          />
+        ))}
+        <Redirect from="/home" to="/home/overall/national-trend" />
+      </Switch> */}
+    </AdminLayout>
   );
 }
 
-export default App;
+export default memo(App);

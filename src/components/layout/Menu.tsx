@@ -10,7 +10,7 @@ import {
   ContainerOutlined,
   MailOutlined,
 } from "@ant-design/icons";
-import menuList, { MenuItem, BreadcrumbNameMap } from "../../common/menu";
+import menuList, { MenuItem, BreadcrumbNameMap } from "@/config/menu";
 
 const { SubMenu } = Menu;
 
@@ -25,43 +25,38 @@ declare interface MenuListProps {
 // const MenuMap = new Map();
 
 function AdminMenu({ history, location, onSelect }: any) {
+  // console.log(history);
   // 初始化
   let { pathname } = location;
+  const paths = pathname.match(/\/[^\/]+/g);
   let defaultSelectedKey: string = pathname;
-  let defaultOpenKey: string = "/overall";
+  let defaultOpenKey: string = paths[1];
 
   let menuLength = 0,
     subMenuLength = 0,
     list = menuList;
 
+  const [KeyPaths, setKeyPaths] = useState([
+    defaultSelectedKey,
+    defaultOpenKey,
+  ]);
   // 渲染后
   useEffect(() => {
-    onSelect(breadcrunmbPath);
+    onSelect(breadcrunmbPath(KeyPaths));
   }, []);
-  // const keyPath = useMemo(
-  //   () => [defaultSelectedKey, defaultOpenKey],
-  //   [defaultSelectedKey]
-  // );
-  const breadcrunmbPath = useMemo(() => {
-    let keyPath = [defaultSelectedKey, defaultOpenKey];
-    return keyPath.map((key: string) => BreadcrumbNameMap.get(key)).reverse();
-  }, [defaultSelectedKey, defaultOpenKey]);
+  const breadcrunmbPath = useCallback(
+    (keyPath: string[]) =>
+      keyPath.map((key: string) => BreadcrumbNameMap.get(key)).reverse(),
+    [KeyPaths]
+  );
 
   // 根据初次跳转的路由设置默认选中的菜单
   const menuOnSelect = ({ keyPath, selectedKeys }: any) => {
-    onSelect(breadcrunmbPath);
+    // console.log(selectedKeys);
+    setKeyPaths(keyPath);
+    onSelect(breadcrunmbPath(keyPath), selectedKeys[0]);
   };
   // 路由跳转
-
-  // const go = ({ item, key, keyPath, domEvent }: any) => {
-  //   // console.log(key, keyPath);
-  //   let path = key;
-  //   path && history.push(path); //编程式导航
-  // };
-  // const go = (path: string | boolean) => {
-  //   path && history.push(path); //编程式导航
-  // };
-  // onSelect(breadcrunmbPath);
   return (
     <Menu
       defaultSelectedKeys={[defaultSelectedKey]}
@@ -83,6 +78,7 @@ function AdminMenu({ history, location, onSelect }: any) {
                 return (
                   // key={++menuLength}
                   <Menu.Item key={`${item.key}`} icon={item.icon}>
+                    {/* {item.name} */}
                     {item.path ? (
                       <Link to={item.path?.toString()}>{item.name}</Link>
                     ) : (
@@ -97,6 +93,7 @@ function AdminMenu({ history, location, onSelect }: any) {
           ++menuLength;
           return (
             <Menu.Item key={item.key} icon={item.icon}>
+              {/* {item.name} */}
               {item.path ? (
                 <Link to={item.path?.toString()}>{item.name}</Link>
               ) : (

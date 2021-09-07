@@ -1,67 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.less";
+
+// 路由相关
 import { BrowserRouter as Router } from "react-router-dom";
-import { renderRoutes } from "react-router-config";
+// import { renderRoutes } from "react-router-config";
+import RenderRoutes from "@/utils/render-routes";
+import routes from "./config/routes"; // 路由
 
-import routes from "./router"; // 路由
+// router相关
+import { Provider } from "react-redux";
+import store from "./store";
 
-// 全局Context
-// const ThemeContext = React.createContext("light");
+// 重点 路由守卫
 
 ReactDOM.render(
-  <Router>{renderRoutes(routes)}</Router>,
+  <Provider store={store}>
+    <Router>
+      <RenderRoutes routes={routes} />
+    </Router>
+  </Provider>,
   document.getElementById("root")
 );
-
-// const Root = ({ route }: RouteConfigComponentProps) => (
-//   <div>
-//     <h1>Root</h1>
-//     {/* child routes won't render without this */}
-//     {route && renderRoutes(route.routes)}
-//   </div>
-// );
-
-// const Home = ({ route }: RouteConfig) => (
-//   <div>
-//     <h2>Home</h2>
-//   </div>
-// );
-
-// const Child = ({ route }: RouteConfig) => (
-//   <div>
-//     <h2>Child</h2>
-//     {/* child routes won't render without this */}
-//     {renderRoutes(route.routes)}
-//   </div>
-// );
-
-// const GrandChild = () => (
-//   <div>
-//     <h3>Grand Child</h3>
-//   </div>
-// );
-
-// const routes: RouteConfig[] = [
-//   {
-//     component: Root,
-//     routes: [
-//       { path: "/", exact: true, component: Home },
-//       {
-//         path: "/child/:id",
-//         component: Child,
-//         // routes: [
-//         //   path: '/child/:id/grand-child',
-//         //   component: GrandChild
-//         // ]
-//       },
-//     ],
-//   },
-// ];
-// ReactDOM.render(
-//   <Router>
-//     {/* kick it all off with the root route */}
-//     {renderRoutes(routes)}
-//   </Router>,
-//   document.getElementById("root")
-// );
