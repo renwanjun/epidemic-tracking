@@ -45,6 +45,7 @@ function setChartOptions(myChart: any, option: any) {
           sublink:
             "http://zh.wikipedia.org/wiki/%E9%A6%99%E6%B8%AF%E8%A1%8C%E6%94%BF%E5%8D%80%E5%8A%83#cite_note-12",
         },
+        // 图标相对于canvas的宽高
         grid: {
           left: 0,
           right: 0,
@@ -132,10 +133,22 @@ function setChartOptions(myChart: any, option: any) {
   };
 }
 
+function getElementStyle(ele: Element) {
+  const style = window.getComputedStyle(ele);
+  return {
+    height: style.getPropertyValue("height"),
+    width: style.getPropertyValue("width"),
+  };
+}
+
 export default function Map() {
   var chartRef: any = useRef(null);
   useEffect(() => {
     var chartDom = chartRef;
+    // 计算容器父节点的宽高
+    var size = getElementStyle(chartDom.parentElement);
+    chartDom.style.width = size.width;
+    // 初始化一个chart容器
     var myChart = echarts.init(chartDom);
     var option: any;
     //
@@ -143,9 +156,6 @@ export default function Map() {
 
     getMapData(`${ROOT_PATH}/data/asset/geo/HK.json`)
       .then(setChartOptions(myChart, option))
-      .then(() => {
-        // option && myChart.setOption(option);
-      })
       .catch(err => {
         console.log(err);
       });
@@ -160,9 +170,9 @@ export default function Map() {
       ref={thisDiv => (chartRef = thisDiv!)}
       style={{
         position: "relative",
-        width: "100%",
+        left: 0,
+        right: 0,
         height: "400px",
-        overflowX: "auto",
       }}
     >
       map
